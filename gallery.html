@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галерея — Nomad Coffee Астана</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .section-title { font-family: 'Playfair Display', serif; }
+        .nav-link { position: relative; }
+        .nav-link:after { content: ''; position: absolute; width: 0; height: 2px; bottom: -2px; left: 0; background-color: #5C4033; transition: width 0.3s; }
+        .nav-link:hover:after { width: 100%; }
+        img { transition: transform 0.4s ease; }
+        img:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body class="bg-[#f8f1e3] text-[#3f2a1f]">
+
+    <!-- NAVBAR -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-[#5C4033] rounded-2xl flex items-center justify-center text-white text-3xl">☕</div>
+                    <div>
+                        <h1 class="text-3xl font-bold tracking-tighter section-title">Nomad Coffee</h1>
+                        <p class="text-xs -mt-1 text-[#8d6f4e]">Астана • с 2024</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-10 text-lg font-medium">
+                    <a href="index.html" class="nav-link">Главная</a>
+                    <a href="menu.html" class="nav-link">Меню</a>
+                    <a href="about.html" class="nav-link">О нас</a>
+                    <a href="gallery.html" class="nav-link text-[#5C4033] font-semibold">Галерея</a>
+                    <a href="reviews.html" class="nav-link">Отзывы</a>
+                </div>
+                <button onclick="location.href='contacts.html'" class="bg-[#5C4033] text-white px-8 py-3.5 rounded-2xl font-semibold flex items-center gap-2">
+                    <i class="fas fa-phone"></i> Забронировать
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- GALLERY -->
+    <section class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span class="text-[#8d6f4e]">МОМЕНТЫ ИЗ НАШЕЙ ЖИЗНИ</span>
+                <h1 class="text-6xl section-title mt-3">Галерея Nomad Coffee</h1>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <img src="https://avatars.mds.yandex.net/i?id=7627f60bcdee58995e2951633de7b03c26197111-12935593-images-thumbs&n=13" class="rounded-3xl aspect-square object-cover">
+                <img src="https://img01.kupiprodai.ru/062018/1527885471342.jpg" class="rounded-3xl aspect-square object-cover">
+                <img src="https://i.pinimg.com/originals/55/65/6a/55656aba6eb97a38c43eeb012fe74b5e.jpg" class="rounded-3xl aspect-square object-cover">
+                <img src="https://i.pinimg.com/736x/24/86/c2/2486c294f02be05dd076a52b6a616bec.jpg" class="rounded-3xl aspect-square object-cover">
+                <img src="https://img.sdelka.kz/FD_VvqVdwXo/el:true/rs:fill:1200:627/dpr:1.75/f:webp/czM6Ly9rYXBpdGFsLW1hcmtldC8vMjc5MDIvYjNmNGY1ZDMyNWVhYmJkZjk3NWU0MjYwYzMxMWU1NDYuanBlZw" class="rounded-3xl aspect-square object-cover">
+                <img src="https://www.slivki.by/znijki-media/w1044_644/default/1009921/_resized_eda-zavtrak-minsk-skidka-artel-1.jpg" class="rounded-3xl aspect-square object-cover">
+                <img src="https://avatars.mds.yandex.net/i?id=cd3c8430bd3d0ad4b241b928179d9d7a_l-5255999-images-thumbs&n=13" class="rounded-3xl aspect-square object-cover">
+                <img src="https://static.sobaka.ru/images/image/01/16/80/93/_normal.jpg?v=1567150938" class="rounded-3xl aspect-square object-cover">
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[#2a1f16] text-white/70 py-16 text-center">
+        <p>© 2024 Nomad Coffee. Астана ❤️</p>
+    </footer>
+</body>
+</html>

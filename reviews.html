@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отзывы — Nomad Coffee Астана</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8f1e3; }
+        .section-title { font-family: 'Playfair Display', serif; }
+        
+        .nav-link { position: relative; }
+        .nav-link:after { 
+            content: ''; position: absolute; width: 0; height: 2px; 
+            bottom: -2px; left: 0; background-color: #5C4033; transition: width 0.3s; 
+        }
+        .nav-link:hover:after { width: 100%; }
+
+        /* ANIMATIONS */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse-scale {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
+        .animate-slide-in { animation: slideIn 0.8s ease-out forwards; }
+
+        /* STAR RATING */
+        .star-rating {
+            display: flex;
+            gap: 8px;
+            font-size: 24px;
+        }
+
+        .star-rating .star {
+            color: #FCD34D;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .star-rating .star.empty {
+            color: #E5E7EB;
+        }
+
+        /* REVIEW CARD */
+        .review-card {
+            background: white;
+            border-radius: 24px;
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: absolute;
+            width: 100%;
+            opacity: 0;
+            transform: translateX(100px);
+            pointer-events: none;
+        }
+
+        .review-card.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+            z-index: 10;
+        }
+
+        .review-card.prev {
+            opacity: 0;
+            transform: translateX(-100px);
+            pointer-events: none;
+        }
+
+        /* CAROUSEL CONTAINER */
+        .carousel-container {
+            position: relative;
+            height: 420px;
+            margin-bottom: 60px;
+        }
+
+        /* DOTS NAVIGATION */
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 40px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #D1C4B8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: #5C4033;
+            width: 32px;
+            border-radius: 6px;
+        }
+
+        .dot:hover {
+            background: #8d6f4e;
+        }
+
+        /* HEADER RATING */
+        .rating-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: white;
+            padding: 16px 28px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+
+        .rating-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #5C4033;
+        }
+
+        .rating-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* BUTTONS */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 48px;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+
+        .btn-prev, .btn-next {
+            background: #f8f1e3;
+            color: #5C4033;
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            border: 2px solid #E5D4C1;
+        }
+
+        .btn-prev:hover, .btn-next:hover {
+            background: #5C4033;
+            color: white;
+            border-color: #5C4033;
+            transform: scale(1.1);
+        }
+
+        .btn-2gis {
+            background: #5C4033;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-2gis:hover {
+            background: #3f2a1f;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(92, 64, 51, 0.3);
+        }
+
+        /* AUTHOR AVATAR */
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #5C4033, #8d6f4e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* QUOTE MARK */
+        .quote-mark {
+            font-size: 60px;
+            color: #FCD34D;
+            opacity: 0.3;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        /* STAGGER ANIMATION */
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+    </style>
+</head>
+<body class="bg-[#f8f1e3] text-[#3f2a1f]">
+
+    <!-- NAVBAR -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-[#5C4033] rounded-2xl flex items-center justify-center text-white text-3xl">☕</div>
+                    <div>
+                        <h1 class="text-3xl font-bold tracking-tighter section-title">Nomad Coffee</h1>
+                        <p class="text-xs -mt-1 text-[#8d6f4e]">Астана • с 2024</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-10 text-lg font-medium">
+                    <a href="index.html" class="nav-link">Главная</a>
+                    <a href="menu.html" class="nav-link">Меню</a>
+                    <a href="about.html" class="nav-link">О нас</a>
+                    <a href="gallery.html" class="nav-link">Галерея</a>
+                    <a href="reviews.html" class="nav-link text-[#5C4033] font-semibold">Отзывы</a>
+                </div>
+                <button onclick="location.href='contacts.html'" class="bg-[#5C4033] hover:bg-[#3f2a1f] text-white px-8 py-3.5 rounded-2xl font-semibold flex items-center gap-2 transition-all">
+                    <i class="fas fa-phone"></i> Забронировать
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- REVIEWS SECTION -->
+    <section class="py-32 bg-[#f8f1e3]">
+        <div class="max-w-4xl mx-auto px-6">
+            
+            <!-- HEADER -->
+            <div class="text-center mb-20 animate-fade-in-up">
+                <h1 class="text-7xl section-title mb-8 text-[#3f2a1f]">Что говорят гости</h1>
+                <p class="text-xl text-gray-600">Более 250 отзывов от реальных клиентов</p>
+            </div>
+
+            <!-- RATING BADGE -->
+            <div class="flex justify-center mb-12 animate-fade-in-up stagger-1">
+                <div class="rating-badge">
+                    <div class="rating-number">4.8</div>
+                    <div>
+                        <div class="star-rating" style="margin-bottom: 4px;">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                        </div>
+                        <div class="rating-text">250+ отзывов</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CAROUSEL -->
+            <div class="carousel-container animate-fade-in-up stagger-2">
+                <!-- REVIEW 1 -->
+                <div class="review-card active">
+                    <div class="quote-mark">"</div>
+                    <div class="star-rating mb-6">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="text-2xl font-light leading-relaxed mb-8 text-gray-800">
+                        "Самый вкусный flat white в Астане. Работаю здесь каждый день — розетки, быстрый Wi-Fi и тишина. Идеальное место для фрилансеров."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="avatar">АС</div>
+                        <div>
+                            <p class="font-semibold text-lg">Айгуль С.</p>
+                            <p class="text-sm text-gray-500">Студентка КБТУ</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REVIEW 2 -->
+                <div class="review-card">
+                    <div class="quote-mark">"</div>
+                    <div class="star-rating mb-6">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="text-2xl font-light leading-relaxed mb-8 text-gray-800">
+                        "Привозим сюда всех гостей из Алматы. Все в восторге от интерьера и матча-латте. Атмосфера просто волшебная, персонал очень внимательный."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="avatar" style="background: linear-gradient(135deg, #8d6f4e, #a68876);">ЕК</div>
+                        <div>
+                            <p class="font-semibold text-lg">Ерлан К.</p>
+                            <p class="text-sm text-gray-500">Блогер @erlan_travel</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REVIEW 3 -->
+                <div class="review-card">
+                    <div class="quote-mark">"</div>
+                    <div class="star-rating mb-6">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="text-2xl font-light leading-relaxed mb-8 text-gray-800">
+                        "Делаем здесь корпоративы на 30 человек. Отдельный зал, отличный кофе, вкусные десерты и такое внимание к деталям. Все клиенты в восторге!"
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="avatar" style="background: linear-gradient(135deg, #a68876, #c9b5a3);">ДМ</div>
+                        <div>
+                            <p class="font-semibold text-lg">Данияр М.</p>
+                            <p class="text-sm text-gray-500">Руководитель Kaspi</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REVIEW 4 -->
+                <div class="review-card">
+                    <div class="quote-mark">"</div>
+                    <div class="star-rating mb-6">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="text-2xl font-light leading-relaxed mb-8 text-gray-800">
+                        "Лучшая кофейня в Астане для встреч и переговоров. Тихая обстановка, хороший звук (не громко, как в других местах), вкусное меню."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="avatar" style="background: linear-gradient(135deg, #5C4033, #6d5043);">МЖ</div>
+                        <div>
+                            <p class="font-semibold text-lg">Мария Ж.</p>
+                            <p class="text-sm text-gray-500">Графический дизайнер</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REVIEW 5 -->
+                <div class="review-card">
+                    <div class="quote-mark">"</div>
+                    <div class="star-rating mb-6">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="text-2xl font-light leading-relaxed mb-8 text-gray-800">
+                        "Первый раз попали сюда по совету друга. Кофе реально вкусный, но главное — люди. Барист Марат объясняет про разные сорта, очень профессиональный."
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <div class="avatar" style="background: linear-gradient(135deg, #7d5a4f, #9d7a6f);">АН</div>
+                        <div>
+                            <p class="font-semibold text-lg">Алиса Н.</p>
+                            <p class="text-sm text-gray-500">Учитель английского</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NAVIGATION -->
+            <div class="flex items-center justify-center gap-6 animate-fade-in-up stagger-3">
+                <button class="btn btn-prev" onclick="prevReview()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div class="carousel-dots">
+                    <div class="dot active" onclick="goToReview(0)"></div>
+                    <div class="dot" onclick="goToReview(1)"></div>
+                    <div class="dot" onclick="goToReview(2)"></div>
+                    <div class="dot" onclick="goToReview(3)"></div>
+                    <div class="dot" onclick="goToReview(4)"></div>
+                </div>
+
+                <button class="btn btn-next" onclick="nextReview()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+
+            <!-- 2GIS CTA -->
+            <div class="btn-group">
+                <button class="btn btn-2gis" onclick="window.open('https://2gis.kz/astana', '_blank')">
+                    <i class="fas fa-star"></i>
+                    Смотреть все отзывы на 2ГИС
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-[#2a1f16] text-white/70 py-16 text-center">
+        <p>© 2024 Nomad Coffee. Астана ❤️</p>
+    </footer>
+
+    <script>
+        let currentIndex = 0;
+        const reviewCards = document.querySelectorAll('.review-card');
+        const dots = document.querySelectorAll('.dot');
+        const totalReviews = reviewCards.length;
+
+        function updateCarousel() {
+            reviewCards.forEach((card, index) => {
+                card.classList.remove('active', 'prev');
+                if (index === currentIndex) {
+                    card.classList.add('active');
+                } else if (index < currentIndex) {
+                    card.classList.add('prev');
+                }
+            });
+
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentIndex);
+            });
+        }
+
+        function nextReview() {
+            currentIndex = (currentIndex + 1) % totalReviews;
+            updateCarousel();
+        }
+
+        function prevReview() {
+            currentIndex = (currentIndex - 1 + totalReviews) % totalReviews;
+            updateCarousel();
+        }
+
+        function goToReview(index) {
+            currentIndex = index;
+            updateCarousel();
+        }
+
+        // Auto-scroll каждые 6 секунд
+        setInterval(nextReview, 6000);
+    </script>
+</body>
+</html>
